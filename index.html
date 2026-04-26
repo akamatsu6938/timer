@@ -4,21 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>筋トレタイマー</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #0f0f0f; color: #fff;
-      min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
     }
     .wrap {
       display: flex; flex-direction: column; align-items: center;
       padding: 2.5rem 1rem 2rem; gap: 2rem; width: 100%; max-width: 380px;
     }
-    .label-top {
-      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-      color: #666; font-weight: 500;
-    }
+    .label-top { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #666; font-weight: 500; }
     .clock-ring { position: relative; width: 240px; height: 240px; }
     .clock-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
     .clock-inner {
@@ -93,8 +94,48 @@
     <div class="status-msg" id="status"></div>
   </div>
   <script>
+    // PWA Service Worker登録
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+
     const CIRC = 2 * Math.PI * 108;
     let total = 0, remaining = 0, interval = null;
+    let startTime = null, pausedRemaining = null, worker = null;
+
+    // Web Worker をインラインで生成（バックグラウンド対応）
+    const workerCode = `
+      let timer = null;
+      self.onmessage = function(e) {
+        if (e.data.type === 'start') {
+          clearInterval(timer);
+          let remaining = e.data.remaining;
+          timer = setInterval(() => {
+            remaining--;
+            self.postMessage({ remaining });
+            if (remaining <= 0) clearInterval(timer);
+          }, 1000);
+        }
+        if (e.data.type === 'stop') clearInterval(timer);
+      };
+    `;
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    worker = new Worker(URL.createObjectURL(blob));
+    worker.onmessage = function(e) {
+      remaining = e.data.remaining;
+      clock.textContent = fmt(remaining);
+      updateRing();
+      if (remaining <= 10 && remaining > 0) {
+        status.textContent = remaining + ' sec remaining';
+        ring.style.stroke = '#ff5c5c';
+        clock.className = 'clock finished';
+      }
+      if (remaining <= 0) {
+        status.textContent = 'Complete! Good work.';
+        ring.style.strokeDashoffset = 0;
+        secBtns.forEach(b => b.classList.remove('active'));
+      }
+    };
     const clock = document.getElementById('clock');
     const sub = document.getElementById('clock-sub');
     const ring = document.getElementById('ring');
@@ -108,7 +149,7 @@
       ring.style.strokeDashoffset = CIRC * remaining / total;
     }
     function startTimer(sec) {
-      clearInterval(interval);
+      worker.postMessage({ type: 'stop' });
       total = sec; remaining = sec;
       clock.className = 'clock running';
       ring.style.stroke = '#4da6ff';
@@ -118,30 +159,14 @@
       status.textContent = '';
       secBtns.forEach(b => b.classList.remove('active'));
       secBtns[[90,120,150,180].indexOf(sec)].classList.add('active');
-      interval = setInterval(() => {
-        remaining--;
-        clock.textContent = fmt(remaining);
-        updateRing();
-        if (remaining <= 10 && remaining > 0) {
-          status.textContent = remaining + ' sec remaining';
-          ring.style.stroke = '#ff5c5c';
-          clock.className = 'clock finished';
-        }
-        if (remaining <= 0) {
-          clearInterval(interval); interval = null;
-          ring.style.strokeDashoffset = 0;
-          status.textContent = 'Complete! Good work.';
-          secBtns.forEach(b => b.classList.remove('active'));
-        }
-      }, 1000);
+      worker.postMessage({ type: 'start', remaining });
     }
     function stopTimer() {
-      if (!interval) return;
-      clearInterval(interval); interval = null;
+      worker.postMessage({ type: 'stop' });
       status.textContent = '';
     }
     function resetTimer() {
-      clearInterval(interval); interval = null;
+      worker.postMessage({ type: 'stop' });
       total = 0; remaining = 0;
       clock.className = 'clock';
       clock.textContent = '00:00';
