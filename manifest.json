@@ -1,0 +1,20 @@
+{
+  "name": "筋トレタイマー",
+  "short_name": "筋トレTimer",
+  "start_url": "/timer/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/0f0f0f/4da6ff?text=T",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/0f0f0f/4da6ff?text=T",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
