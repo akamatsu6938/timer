@@ -13,12 +13,13 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #0f0f0f; color: #fff;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; display: flex; justify-content: center;
     }
     .wrap {
       display: flex; flex-direction: column; align-items: center;
-      padding: 2.5rem 1rem 2rem; gap: 2rem; width: 100%; max-width: 380px;
+      padding: 1.5rem 1rem 2rem; gap: 0.8rem; justify-content: center; width: 100%; max-width: 420px;
     }
+    /* ── タイマー部分 ── */
     .label-top { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #666; font-weight: 500; }
     .clock-ring { position: relative; width: 240px; height: 240px; }
     .clock-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
@@ -45,12 +46,12 @@
       content: ''; position: absolute; bottom: 0; left: 0; right: 0;
       height: 2px; background: #4da6ff; transform: scaleX(0); transition: transform 0.2s;
     }
-    .sec-btn:active { transform: scale(0.95); background: #222; }
+    .sec-btn:active { transform: scale(0.95); }
     .sec-btn.active { background: #4da6ff22; color: #4da6ff; border-color: #4da6ff; }
     .sec-btn.active::after { transform: scaleX(1); }
     .sec-label { font-size: 10px; display: block; letter-spacing: 1px; opacity: 0.6; margin-top: 2px; font-weight: 400; }
-    .divider { width: 100%; max-width: 320px; border: none; border-top: 1px solid #222; }
-    .ctrl-btns { display: flex; gap: 12px; }
+    .divider { width: 100%; max-width: 380px; border: none; border-top: 1px solid #222; margin: 0.2rem 0; }
+    .ctrl-btns { display: flex; gap: 12px; margin: 0.4rem 0; }
     .ctrl-btn {
       padding: 13px 36px; font-size: 14px; font-weight: 600; letter-spacing: 1.5px;
       border-radius: 10px; cursor: pointer; transition: all 0.15s; text-transform: uppercase;
@@ -62,67 +63,226 @@
     .ctrl-btn.reset { border: 1.5px solid #333; color: #666; background: #1a1a1a; }
     .ctrl-btn.reset:active { background: #222; color: #aaa; }
     .status-msg { font-size: 12px; letter-spacing: 2px; color: #ff5c5c; height: 16px; text-transform: uppercase; }
+
+    /* ── メニュー部分 ── */
+    .menu-section { width: 100%; margin-top: 0.4rem; }
+    .menu-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #666; font-weight: 500; text-align: center; margin-bottom: 12px; }
+    .menu-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+    .menu-tab {
+      padding: 8px 14px; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      border-radius: 8px; border: 1.5px solid #333; background: #1a1a1a;
+      color: #666; cursor: pointer; transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .menu-tab:active { transform: scale(0.95); }
+    .menu-tab.push { border-color: #ff7c4d44; }
+    .menu-tab.pull { border-color: #4da6ff44; }
+    .menu-tab.leg  { border-color: #a78bfa44; }
+    .menu-tab.active.push { background: #ff7c4d22; color: #ff7c4d; border-color: #ff7c4d; }
+    .menu-tab.active.pull { background: #4da6ff22; color: #4da6ff; border-color: #4da6ff; }
+    .menu-tab.active.leg  { background: #a78bfa22; color: #a78bfa; border-color: #a78bfa; }
+    .menu-content { display: none; background: #141414; border-radius: 12px; padding: 16px; border: 1px solid #222; max-height: 45vh; overflow-y: auto; }
+    .menu-content.visible { display: block; }
+    .menu-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #222;
+    }
+    .menu-title { font-size: 14px; font-weight: 700; letter-spacing: 1px; }
+    .menu-title.push { color: #ff7c4d; }
+    .menu-title.pull { color: #4da6ff; }
+    .menu-title.leg  { color: #a78bfa; }
+    .menu-total { font-size: 11px; color: #555; letter-spacing: 1px; }
+    .menu-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0; border-bottom: 1px solid #1e1e1e; gap: 8px;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .item-num { font-size: 11px; color: #444; min-width: 18px; }
+    .item-name { font-size: 13px; color: #ccc; flex: 1; }
+    .item-sets {
+      font-size: 12px; font-weight: 600; padding: 3px 10px;
+      border-radius: 6px; letter-spacing: 0.5px; white-space: nowrap;
+    }
+    .item-sets.push { background: #ff7c4d18; color: #ff7c4d; }
+    .item-sets.pull { background: #4da6ff18; color: #4da6ff; }
+    .item-sets.leg  { background: #a78bfa18; color: #a78bfa; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="label-top">Rest Timer</div>
-    <div class="clock-ring">
-      <svg width="240" height="240" viewBox="0 0 240 240">
-        <circle cx="120" cy="120" r="108" fill="none" stroke="#222" stroke-width="6"/>
-        <circle id="ring" cx="120" cy="120" r="108" fill="none" stroke="#4da6ff"
-          stroke-width="6" stroke-linecap="round"
-          stroke-dasharray="678.58" stroke-dashoffset="678.58"
-          style="transition: stroke-dashoffset 0.6s linear, stroke 0.3s;"/>
-      </svg>
-      <div class="clock-inner">
-        <div class="clock" id="clock">00:00</div>
-        <div class="clock-sub" id="clock-sub">— sec</div>
-      </div>
+<div class="wrap">
+  <div class="label-top">Rest Timer</div>
+  <div class="clock-ring">
+    <svg width="240" height="240" viewBox="0 0 240 240">
+      <circle cx="120" cy="120" r="108" fill="none" stroke="#222" stroke-width="6"/>
+      <circle id="ring" cx="120" cy="120" r="108" fill="none" stroke="#4da6ff"
+        stroke-width="6" stroke-linecap="round"
+        stroke-dasharray="678.58" stroke-dashoffset="678.58"
+        style="transition: stroke-dashoffset 0.6s linear, stroke 0.3s;"/>
+    </svg>
+    <div class="clock-inner">
+      <div class="clock" id="clock">00:00</div>
+      <div class="clock-sub" id="clock-sub">— sec</div>
     </div>
-    <div class="sec-btns">
-      <button class="sec-btn" onclick="startTimer(90)">90<span class="sec-label">sec</span></button>
-      <button class="sec-btn" onclick="startTimer(120)">120<span class="sec-label">sec</span></button>
-      <button class="sec-btn" onclick="startTimer(150)">150<span class="sec-label">sec</span></button>
-      <button class="sec-btn" onclick="startTimer(180)">180<span class="sec-label">sec</span></button>
-    </div>
-    <hr class="divider">
-    <div class="ctrl-btns">
-      <button class="ctrl-btn stop" onclick="stopTimer()">Stop</button>
-      <button class="ctrl-btn reset" onclick="resetTimer()">Reset</button>
-    </div>
-    <div class="status-msg" id="status"></div>
   </div>
-  <script>
-    // PWA Service Worker登録
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
-    }
+  <div class="sec-btns">
+    <button class="sec-btn" onclick="startTimer(90)">90<span class="sec-label">sec</span></button>
+    <button class="sec-btn" onclick="startTimer(120)">120<span class="sec-label">sec</span></button>
+    <button class="sec-btn" onclick="startTimer(150)">150<span class="sec-label">sec</span></button>
+    <button class="sec-btn" onclick="startTimer(180)">180<span class="sec-label">sec</span></button>
+  </div>
+  <div class="ctrl-btns">
+    <button class="ctrl-btn stop" onclick="stopTimer()">Stop</button>
+    <button class="ctrl-btn reset" onclick="resetTimer()">Reset</button>
+  </div>
+  <div class="status-msg" id="status"></div>
 
-    const CIRC = 2 * Math.PI * 108;
-    let total = 0, remaining = 0, interval = null;
-    let startTime = null, pausedRemaining = null, worker = null;
+  <!-- メニュー -->
+  <div class="menu-section">
+    <div class="menu-label">Training Menu</div>
+    <div class="menu-tabs">
+      <button class="menu-tab push" onclick="showMenu('pushA')">Push A</button>
+      <button class="menu-tab pull" onclick="showMenu('pullA')">Pull A</button>
+      <button class="menu-tab leg"  onclick="showMenu('legA')">Leg A</button>
+      <button class="menu-tab push" onclick="showMenu('pushB')">Push B</button>
+      <button class="menu-tab pull" onclick="showMenu('pullB')">Pull B</button>
+      <button class="menu-tab leg"  onclick="showMenu('legB')">Leg B</button>
+    </div>
 
-    // Web Worker をインラインで生成（バックグラウンド対応）
-    const workerCode = `
-      let timer = null;
-      self.onmessage = function(e) {
-        if (e.data.type === 'start') {
-          clearInterval(timer);
-          let remaining = e.data.remaining;
-          timer = setInterval(() => {
-            remaining--;
-            self.postMessage({ remaining });
-            if (remaining <= 0) clearInterval(timer);
-          }, 1000);
-        }
-        if (e.data.type === 'stop') clearInterval(timer);
-      };
-    `;
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
-    worker = new Worker(URL.createObjectURL(blob));
-    worker.onmessage = function(e) {
-      remaining = e.data.remaining;
+    <div id="pushA" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title push">PUSH A</div>
+        <div class="menu-total">28 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ベンチプレス</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスインクラインプレス</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ディップス</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ダンベルプレス</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">スミスショルダー</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">JMプレス</span><span class="item-sets push">4 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">マシンサイドレイズ</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンショルダープレス</span><span class="item-sets push">1 set</span></div>
+      <div class="menu-item"><span class="item-num">9</span><span class="item-name">シーテッドサイドレイズ</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ケーブルフライ</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">11</span><span class="item-name">ケーブルダウン</span><span class="item-sets push">3 sets</span></div>
+    </div>
+
+    <div id="pullA" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title pull">PULL A</div>
+        <div class="menu-total">28 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">チンニング</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスベント</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ラットプル</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ロープーリー（広背・ドロップ下部狙い）</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">マシンロウ（ライフ）</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">リアデルト</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">EZバーカール</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンプリチャーカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">9</span><span class="item-name">ワンハンドカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ハンマーカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">11</span><span class="item-name">リストカール＆リバースリストカール</span><span class="item-sets pull">2 sets</span></div>
+    </div>
+
+    <div id="legA" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title leg">LEG A</div>
+        <div class="menu-total">23 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">カーフレイズ</span><span class="item-sets leg">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スクワット</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">デッドリフト</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ハックスクワット</span><span class="item-sets leg">4 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">エクステンション＆シシー</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">レッグカール</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">アブダクション</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">ブルガリアン</span><span class="item-sets leg">2 sets</span></div>
+    </div>
+
+    <div id="pushB" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title push">PUSH B</div>
+        <div class="menu-total">28 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ベンチプレス</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスインクラインプレス</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ディップス</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">デクラインプレス</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">スミスショルダー</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">マシンサイドレイズ</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">フロントレイズ</span><span class="item-sets push">1 set</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">インクラインサイドレイズ</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">9</span><span class="item-name">フレンチプレス</span><span class="item-sets push">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ケーブルフライ</span><span class="item-sets push">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">11</span><span class="item-name">マシントライセプス</span><span class="item-sets push">4 sets</span></div>
+    </div>
+
+    <div id="pullB" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title pull">PULL B</div>
+        <div class="menu-total">28 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ワイドチンニング</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスベント</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">独立ラットプル</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ロープーリー（ストレート）</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">マシンロウ（スポーツ）</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">シュラッグ</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">インクラインカール</span><span class="item-sets pull">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">9</span><span class="item-name">ケーブルカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ハンマーカール</span><span class="item-sets pull">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">11</span><span class="item-name">リストカール＆リバースリストカール</span><span class="item-sets pull">2 sets</span></div>
+    </div>
+
+    <div id="legB" class="menu-content">
+      <div class="menu-header">
+        <div class="menu-title leg">LEG B</div>
+        <div class="menu-total">23 sets</div>
+      </div>
+      <div class="menu-item"><span class="item-num">1</span><span class="item-name">カーフレイズ</span><span class="item-sets leg">2 sets</span></div>
+      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スクワット</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">3</span><span class="item-name">デッドリフト</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ハックスクワット</span><span class="item-sets leg">4 sets</span></div>
+      <div class="menu-item"><span class="item-num">5</span><span class="item-name">エクステンション＆シシー</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">6</span><span class="item-name">レッグカール</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">7</span><span class="item-name">アブダクション</span><span class="item-sets leg">3 sets</span></div>
+      <div class="menu-item"><span class="item-num">8</span><span class="item-name">ブルガリアン</span><span class="item-sets leg">2 sets</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── タイマー ──
+  const CIRC = 2 * Math.PI * 88;
+  let total = 0, remaining = 0;
+  const clock = document.getElementById('clock');
+  const sub = document.getElementById('clock-sub');
+  const ring = document.getElementById('ring');
+  const status = document.getElementById('status');
+  const secBtns = document.querySelectorAll('.sec-btn');
+
+  let interval = null;
+
+  function fmt(s) {
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  }
+  function updateRing() {
+    ring.style.strokeDashoffset = CIRC * remaining / total;
+  }
+  function startTimer(sec) {
+    clearInterval(interval);
+    total = sec; remaining = sec;
+    clock.className = 'clock running';
+    ring.style.stroke = '#4da6ff';
+    clock.textContent = fmt(remaining);
+    sub.textContent = sec + ' sec';
+    updateRing();
+    status.textContent = '';
+    secBtns.forEach(b => b.classList.remove('active'));
+    secBtns[[90,120,150,180].indexOf(sec)].classList.add('active');
+    interval = setInterval(() => {
+      remaining--;
       clock.textContent = fmt(remaining);
       updateRing();
       if (remaining <= 10 && remaining > 0) {
@@ -131,52 +291,50 @@
         clock.className = 'clock finished';
       }
       if (remaining <= 0) {
-        status.textContent = 'Complete! Good work.';
+        clearInterval(interval); interval = null;
         ring.style.strokeDashoffset = 0;
+        status.textContent = 'Complete! Good work.';
         secBtns.forEach(b => b.classList.remove('active'));
       }
-    };
-    const clock = document.getElementById('clock');
-    const sub = document.getElementById('clock-sub');
-    const ring = document.getElementById('ring');
-    const status = document.getElementById('status');
-    const secBtns = document.querySelectorAll('.sec-btn');
-
-    function fmt(s) {
-      return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
-    }
-    function updateRing() {
-      ring.style.strokeDashoffset = CIRC * remaining / total;
-    }
-    function startTimer(sec) {
-      worker.postMessage({ type: 'stop' });
-      total = sec; remaining = sec;
-      clock.className = 'clock running';
-      ring.style.stroke = '#4da6ff';
-      clock.textContent = fmt(remaining);
-      sub.textContent = sec + ' sec';
-      updateRing();
-      status.textContent = '';
-      secBtns.forEach(b => b.classList.remove('active'));
-      secBtns[[90,120,150,180].indexOf(sec)].classList.add('active');
-      worker.postMessage({ type: 'start', remaining });
-    }
-    function stopTimer() {
-      worker.postMessage({ type: 'stop' });
-      status.textContent = '';
-    }
-    function resetTimer() {
-      worker.postMessage({ type: 'stop' });
-      total = 0; remaining = 0;
-      clock.className = 'clock';
-      clock.textContent = '00:00';
-      sub.textContent = '— sec';
-      ring.style.stroke = '#4da6ff';
-      ring.style.strokeDashoffset = CIRC;
-      status.textContent = '';
-      secBtns.forEach(b => b.classList.remove('active'));
-    }
+    }, 1000);
+  }
+  function stopTimer() {
+    clearInterval(interval); interval = null;
+    status.textContent = '';
+  }
+  function resetTimer() {
+    clearInterval(interval); interval = null;
+    total = 0; remaining = 0;
+    clock.className = 'clock';
+    clock.textContent = '00:00';
+    sub.textContent = '— sec';
+    ring.style.stroke = '#4da6ff';
     ring.style.strokeDashoffset = CIRC;
-  </script>
+    status.textContent = '';
+    secBtns.forEach(b => b.classList.remove('active'));
+  }
+  ring.style.strokeDashoffset = CIRC;
+
+  // ── メニュー ──
+  const menuIds = ['pushA','pullA','legA','pushB','pullB','legB'];
+  const tabs = document.querySelectorAll('.menu-tab');
+  let activeMenu = null;
+
+  function showMenu(id) {
+    if (activeMenu === id) {
+      document.getElementById(id).classList.remove('visible');
+      tabs[[...menuIds].indexOf(id)].classList.remove('active');
+      activeMenu = null;
+      return;
+    }
+    menuIds.forEach((m, i) => {
+      document.getElementById(m).classList.remove('visible');
+      tabs[i].classList.remove('active');
+    });
+    document.getElementById(id).classList.add('visible');
+    tabs[menuIds.indexOf(id)].classList.add('active');
+    activeMenu = id;
+  }
+</script>
 </body>
 </html>
