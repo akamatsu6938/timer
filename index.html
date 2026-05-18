@@ -383,6 +383,7 @@ async function requestNotificationPermission() {
 }
 
 // ── Timer ──
+const TIMER_KEY = 'gymTimerState';
 let timerInterval = null;
 const clock = document.getElementById('clock');
 const statusEl = document.getElementById('status');
@@ -396,36 +397,45 @@ function fmt(s) {
 async function startTimer(sec) {
   await requestNotificationPermission();
 
-  clearInterval(timerInterval);
-  let remaining = sec;
+  const finishAt = Date.now() + sec * 1000;
+  localStorage.setItem(TIMER_KEY, JSON.stringify({ finishAt, sec }));
+  sendSwMessage({ type: 'SCHEDULE_NOTIFICATION', finishAt });
 
-  clock.className = 'clock running';
-  clock.textContent = fmt(remaining);
-  statusEl.textContent = '';
   secBtns.forEach(b => b.classList.remove('active'));
   const idx = SEC_VALUES.indexOf(sec);
   if (idx !== -1) secBtns[idx].classList.add('active');
 
-  sendSwMessage({ type: 'SCHEDULE_NOTIFICATION', finishAt: Date.now() + sec * 1000 });
+  runCountdown(finishAt);
+}
 
-  timerInterval = setInterval(() => {
-    remaining--;
-    clock.textContent = fmt(remaining);
-    if (remaining <= 10 && remaining > 0) {
-      statusEl.textContent = remaining + ' sec remaining';
-      clock.className = 'clock finished';
-    }
-    if (remaining <= 0) {
+function runCountdown(finishAt) {
+  clearInterval(timerInterval);
+  statusEl.textContent = '';
+
+  function tick() {
+    const remaining = Math.ceil((finishAt - Date.now()) / 1000);
+    if (remaining > 0) {
+      clock.textContent = fmt(remaining);
+      clock.className = remaining <= 10 ? 'clock finished' : 'clock running';
+      statusEl.textContent = remaining <= 10 ? remaining + ' sec remaining' : '';
+    } else {
       clearInterval(timerInterval); timerInterval = null;
+      clock.className = 'clock';
+      clock.textContent = '00:00';
       statusEl.textContent = 'Complete! Good work.';
       secBtns.forEach(b => b.classList.remove('active'));
+      localStorage.removeItem(TIMER_KEY);
     }
-  }, 1000);
+  }
+
+  tick();
+  timerInterval = setInterval(tick, 500);
 }
 
 function stopTimer() {
   clearInterval(timerInterval); timerInterval = null;
   statusEl.textContent = '';
+  localStorage.removeItem(TIMER_KEY);
   sendSwMessage({ type: 'CANCEL_NOTIFICATION' });
 }
 
@@ -435,7 +445,26 @@ function resetTimer() {
   clock.textContent = '00:00';
   statusEl.textContent = '';
   secBtns.forEach(b => b.classList.remove('active'));
+  localStorage.removeItem(TIMER_KEY);
   sendSwMessage({ type: 'CANCEL_NOTIFICATION' });
+}
+
+function restoreTimer() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(TIMER_KEY));
+    if (!saved) return;
+    const remaining = Math.ceil((saved.finishAt - Date.now()) / 1000);
+    if (remaining <= 0) {
+      localStorage.removeItem(TIMER_KEY);
+      statusEl.textContent = 'Complete! Good work.';
+      return;
+    }
+    const idx = SEC_VALUES.indexOf(saved.sec);
+    if (idx !== -1) secBtns[idx].classList.add('active');
+    runCountdown(saved.finishAt);
+  } catch {
+    localStorage.removeItem(TIMER_KEY);
+  }
 }
 
 // ── Menu render (normal view) ──
@@ -700,6 +729,7 @@ function initDragDrop(listEl) {
 initMenus();
 renderMenuTabs();
 renderMenuContents();
+restoreTimer();
 </script>
 </body>
 </html>
