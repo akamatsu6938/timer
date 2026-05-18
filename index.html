@@ -17,8 +17,10 @@
     }
     .wrap {
       display: flex; flex-direction: column; align-items: center;
-      padding: 2rem 1rem; gap: 1rem; width: 100%; max-width: 420px;
+      padding: 2rem 1rem 3rem; gap: 1rem; width: 100%; max-width: 420px;
     }
+
+    /* ── Timer ── */
     .label-top { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #666; font-weight: 500; }
     .clock {
       font-family: 'Courier New', monospace; font-size: 72px; font-weight: 600;
@@ -56,7 +58,7 @@
     .status-msg { font-size: 12px; letter-spacing: 2px; color: #ff5c5c; height: 16px; text-transform: uppercase; }
     .divider { width: 100%; max-width: 380px; border: none; border-top: 1px solid #222; }
 
-    /* ── メニュー ── */
+    /* ── Menu (normal view) ── */
     .menu-section { width: 100%; }
     .menu-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #666; font-weight: 500; text-align: center; margin-bottom: 10px; }
     .menu-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
@@ -73,7 +75,10 @@
     .menu-tab.active.push { background: #ff7c4d22; color: #ff7c4d; border-color: #ff7c4d; }
     .menu-tab.active.pull { background: #4da6ff22; color: #4da6ff; border-color: #4da6ff; }
     .menu-tab.active.leg  { background: #a78bfa22; color: #a78bfa; border-color: #a78bfa; }
-    .menu-content { display: none; background: #141414; border-radius: 12px; padding: 14px; border: 1px solid #222; max-height: 45vh; overflow-y: auto; }
+    .menu-content {
+      display: none; background: #141414; border-radius: 12px; padding: 14px;
+      border: 1px solid #222; max-height: 45vh; overflow-y: auto;
+    }
     .menu-content.visible { display: block; }
     .menu-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -95,6 +100,120 @@
     .item-sets.push { background: #ff7c4d18; color: #ff7c4d; }
     .item-sets.pull { background: #4da6ff18; color: #4da6ff; }
     .item-sets.leg  { background: #a78bfa18; color: #a78bfa; }
+    .edit-menu-btn {
+      font-size: 11px; padding: 4px 10px; border-radius: 6px;
+      border: 1px solid #333; background: transparent; color: #666;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; white-space: nowrap;
+    }
+    .edit-menu-btn:active { background: #222; color: #aaa; }
+
+    /* ── Edit Mode ── */
+    .edit-view { display: none; width: 100%; }
+    .edit-view.active { display: block; }
+
+    .edit-menu-header {
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+    }
+    .edit-title-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .edit-title-label { font-size: 11px; color: #444; letter-spacing: 2px; text-transform: uppercase; }
+    .edit-total-display { font-size: 11px; color: #555; }
+    .edit-title-input {
+      width: 100%; padding: 10px 12px; font-size: 14px; font-weight: 600;
+      background: #1e1e1e; border: 1.5px solid #333; border-radius: 8px;
+      color: #fff; outline: none; letter-spacing: 1px;
+    }
+    .edit-title-input:focus { border-color: #4da6ff; }
+
+    .edit-list {
+      display: flex; flex-direction: column; gap: 6px;
+      background: #141414; border-radius: 12px; padding: 10px;
+      border: 1px solid #222; margin-bottom: 10px;
+      user-select: none; -webkit-user-select: none;
+    }
+    .edit-item {
+      display: flex; align-items: center; gap: 8px;
+      background: #1a1a1a; border-radius: 8px; padding: 8px 10px;
+      border: 1px solid #2a2a2a;
+    }
+    .edit-item.is-dragging { opacity: 0.35; }
+
+    .drag-handle {
+      color: #444; font-size: 16px; cursor: grab; padding: 4px 2px;
+      touch-action: none; flex-shrink: 0; line-height: 1;
+    }
+    .drag-handle:active { cursor: grabbing; color: #666; }
+
+    .edit-name-input {
+      flex: 1; padding: 6px 8px; font-size: 13px;
+      background: #1e1e1e; border: 1.5px solid #333; border-radius: 6px;
+      color: #fff; outline: none; min-width: 0;
+    }
+    .edit-name-input:focus { border-color: #4da6ff; }
+    .edit-name-input.error { border-color: #ff5c5c; }
+
+    .sets-control { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .sets-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid #333;
+      background: #222; color: #aaa; font-size: 16px; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent; flex-shrink: 0;
+    }
+    .sets-btn:active { background: #2a2a2a; color: #fff; }
+    .sets-input {
+      width: 38px; text-align: center; padding: 4px 0; font-size: 13px; font-weight: 600;
+      background: #1e1e1e; border: 1.5px solid #333; border-radius: 6px;
+      color: #fff; outline: none; -moz-appearance: textfield;
+    }
+    .sets-input:focus { border-color: #4da6ff; }
+    .sets-input::-webkit-outer-spin-button,
+    .sets-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .delete-btn {
+      color: #444; font-size: 14px; cursor: pointer; padding: 4px 6px;
+      border-radius: 6px; border: none; background: transparent;
+      -webkit-tap-highlight-color: transparent; flex-shrink: 0; line-height: 1;
+    }
+    .delete-btn:active { background: #ff5c5c22; color: #ff5c5c; }
+
+    .add-exercise-btn {
+      width: 100%; padding: 12px; font-size: 13px; font-weight: 600;
+      border: 1.5px dashed #333; border-radius: 10px;
+      background: transparent; color: #555; cursor: pointer;
+      letter-spacing: 1px; margin-bottom: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .add-exercise-btn:active { background: #1a1a1a; color: #aaa; border-style: solid; }
+
+    .edit-error { font-size: 12px; color: #ff5c5c; text-align: center; min-height: 16px; margin-bottom: 6px; }
+
+    .edit-actions { display: flex; gap: 10px; }
+    .save-btn {
+      flex: 1; padding: 13px; font-size: 14px; font-weight: 700; letter-spacing: 1px;
+      background: #4da6ff; color: #fff; border: none; border-radius: 10px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .save-btn:active { opacity: 0.85; }
+    .cancel-btn {
+      flex: 1; padding: 13px; font-size: 14px; font-weight: 600; letter-spacing: 1px;
+      background: transparent; color: #666; border: 1.5px solid #333; border-radius: 10px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .cancel-btn:active { background: #1a1a1a; color: #aaa; }
+
+    /* Ghost element during drag */
+    .drag-ghost {
+      position: fixed; pointer-events: none; z-index: 9999;
+      opacity: 0.9; box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      border-color: #4da6ff44 !important;
+    }
+
+    /* iOS/PWA note */
+    .ios-note {
+      font-size: 10px; color: #2a2a2a; text-align: center;
+      line-height: 1.6; padding: 0 1rem; letter-spacing: 0.3px;
+    }
   </style>
 </head>
 <body>
@@ -119,164 +238,468 @@
 
   <div class="menu-section">
     <div class="menu-label">Training Menu</div>
-    <div class="menu-tabs">
-      <button class="menu-tab push" onclick="showMenu('pushA')">Push A</button>
-      <button class="menu-tab pull" onclick="showMenu('pullA')">Pull A</button>
-      <button class="menu-tab leg"  onclick="showMenu('legA')">Leg A</button>
-      <button class="menu-tab push" onclick="showMenu('pushB')">Push B</button>
-      <button class="menu-tab pull" onclick="showMenu('pullB')">Pull B</button>
-      <button class="menu-tab leg"  onclick="showMenu('legB')">Leg B</button>
+
+    <div id="normalView">
+      <div class="menu-tabs" id="menuTabs"></div>
+      <div id="menuContents"></div>
     </div>
 
-    <div id="pushA" class="menu-content">
-      <div class="menu-header"><div class="menu-title push">PUSH A</div><div class="menu-total">28 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ベンチプレス</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスインクラインプレス</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ディップス</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ダンベルプレス</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">スミスショルダー</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">JMプレス</span><span class="item-sets push">4 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">マシンサイドレイズ</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンショルダープレス</span><span class="item-sets push">1 set</span></div>
-      <div class="menu-item"><span class="item-num">9</span><span class="item-name">シーテッドサイドレイズ</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ケーブルフライ</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">11</span><span class="item-name">ケーブルダウン</span><span class="item-sets push">3 sets</span></div>
-    </div>
-
-    <div id="pullA" class="menu-content">
-      <div class="menu-header"><div class="menu-title pull">PULL A</div><div class="menu-total">28 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">チンニング</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスベント</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ラットプル</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ロープーリー（広背・ドロップ下部狙い）</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">マシンロウ（ライフ）</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">リアデルト</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">EZバーカール</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンプリチャーカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">9</span><span class="item-name">ワンハンドカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ハンマーカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">11</span><span class="item-name">リストカール＆リバースリストカール</span><span class="item-sets pull">2 sets</span></div>
-    </div>
-
-    <div id="legA" class="menu-content">
-      <div class="menu-header"><div class="menu-title leg">LEG A</div><div class="menu-total">23 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">カーフレイズ</span><span class="item-sets leg">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スクワット</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">デッドリフト</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ハックスクワット</span><span class="item-sets leg">4 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">エクステンション＆シシー</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">レッグカール</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">アブダクション</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">ブルガリアン</span><span class="item-sets leg">2 sets</span></div>
-    </div>
-
-    <div id="pushB" class="menu-content">
-      <div class="menu-header"><div class="menu-title push">PUSH B</div><div class="menu-total">28 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ベンチプレス</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスインクラインプレス</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">ディップス</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">デクラインプレス</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">スミスショルダー</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">マシンサイドレイズ</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">フロントレイズ</span><span class="item-sets push">1 set</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">インクラインサイドレイズ</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">9</span><span class="item-name">フレンチプレス</span><span class="item-sets push">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ケーブルフライ</span><span class="item-sets push">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">11</span><span class="item-name">マシントライセプス</span><span class="item-sets push">4 sets</span></div>
-    </div>
-
-    <div id="pullB" class="menu-content">
-      <div class="menu-header"><div class="menu-title pull">PULL B</div><div class="menu-total">28 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">ワイドチンニング</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スミスベント</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">独立ラットプル</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ロープーリー（ストレート）</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">マシンロウ（スポーツ）</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">シュラッグ</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">インクラインカール</span><span class="item-sets pull">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">マシンカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">9</span><span class="item-name">ケーブルカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">10</span><span class="item-name">ハンマーカール</span><span class="item-sets pull">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">11</span><span class="item-name">リストカール＆リバースリストカール</span><span class="item-sets pull">2 sets</span></div>
-    </div>
-
-    <div id="legB" class="menu-content">
-      <div class="menu-header"><div class="menu-title leg">LEG B</div><div class="menu-total">23 sets</div></div>
-      <div class="menu-item"><span class="item-num">1</span><span class="item-name">カーフレイズ</span><span class="item-sets leg">2 sets</span></div>
-      <div class="menu-item"><span class="item-num">2</span><span class="item-name">スクワット</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">3</span><span class="item-name">デッドリフト</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">4</span><span class="item-name">ハックスクワット</span><span class="item-sets leg">4 sets</span></div>
-      <div class="menu-item"><span class="item-num">5</span><span class="item-name">エクステンション＆シシー</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">6</span><span class="item-name">レッグカール</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">7</span><span class="item-name">アブダクション</span><span class="item-sets leg">3 sets</span></div>
-      <div class="menu-item"><span class="item-num">8</span><span class="item-name">ブルガリアン</span><span class="item-sets leg">2 sets</span></div>
+    <div id="editView" class="edit-view">
+      <div class="edit-menu-header">
+        <div class="edit-title-row">
+          <span class="edit-title-label">Menu Name</span>
+          <span class="edit-total-display">合計: <span id="editTotalSets">0</span> sets</span>
+        </div>
+        <input type="text" id="editMenuTitle" class="edit-title-input" placeholder="メニュー名">
+      </div>
+      <div id="editList" class="edit-list"></div>
+      <div class="edit-error" id="editError"></div>
+      <button class="add-exercise-btn" onclick="addExercise()">＋ 種目を追加</button>
+      <div class="edit-actions">
+        <button class="cancel-btn" onclick="cancelEdit()">キャンセル</button>
+        <button class="save-btn" onclick="saveMenu()">保存</button>
+      </div>
     </div>
   </div>
+
+  <p class="ios-note">
+    ※ iOSでバックグラウンド通知を受け取るには、ホーム画面に追加（PWAモード）が必要です。<br>
+    Safariブラウザから直接開いた場合は動作しないことがあります。
+  </p>
 </div>
 
 <script>
-  let total = 0, remaining = 0, interval = null;
-  const clock = document.getElementById('clock');
-  const status = document.getElementById('status');
-  const secBtns = document.querySelectorAll('.sec-btn');
+// ── Helpers ──
+function uid() {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
 
-  function fmt(s) {
-    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── Default menu data ──
+const MENU_KEY = 'gymTimerMenus';
+const MENU_ORDER = ['pushA', 'pullA', 'legA', 'pushB', 'pullB', 'legB'];
+
+const DEFAULT_MENU_DATA = {
+  pushA: { label: 'Push A', type: 'push', exercises: [
+    { name: 'ベンチプレス', sets: 3 }, { name: 'スミスインクラインプレス', sets: 3 },
+    { name: 'ディップス', sets: 2 }, { name: 'ダンベルプレス', sets: 2 },
+    { name: 'スミスショルダー', sets: 3 }, { name: 'JMプレス', sets: 4 },
+    { name: 'マシンサイドレイズ', sets: 2 }, { name: 'マシンショルダープレス', sets: 1 },
+    { name: 'シーテッドサイドレイズ', sets: 3 }, { name: 'ケーブルフライ', sets: 2 },
+    { name: 'ケーブルダウン', sets: 3 },
+  ]},
+  pullA: { label: 'Pull A', type: 'pull', exercises: [
+    { name: 'チンニング', sets: 3 }, { name: 'スミスベント', sets: 3 },
+    { name: 'ラットプル', sets: 3 }, { name: 'ロープーリー（広背・ドロップ下部狙い）', sets: 3 },
+    { name: 'マシンロウ（ライフ）', sets: 3 }, { name: 'リアデルト', sets: 2 },
+    { name: 'EZバーカール', sets: 3 }, { name: 'マシンプリチャーカール', sets: 2 },
+    { name: 'ワンハンドカール', sets: 2 }, { name: 'ハンマーカール', sets: 2 },
+    { name: 'リストカール＆リバースリストカール', sets: 2 },
+  ]},
+  legA: { label: 'Leg A', type: 'leg', exercises: [
+    { name: 'カーフレイズ', sets: 2 }, { name: 'スクワット', sets: 3 },
+    { name: 'デッドリフト', sets: 3 }, { name: 'ハックスクワット', sets: 4 },
+    { name: 'エクステンション＆シシー', sets: 3 }, { name: 'レッグカール', sets: 3 },
+    { name: 'アブダクション', sets: 3 }, { name: 'ブルガリアン', sets: 2 },
+  ]},
+  pushB: { label: 'Push B', type: 'push', exercises: [
+    { name: 'ベンチプレス', sets: 3 }, { name: 'スミスインクラインプレス', sets: 3 },
+    { name: 'ディップス', sets: 2 }, { name: 'デクラインプレス', sets: 2 },
+    { name: 'スミスショルダー', sets: 3 }, { name: 'マシンサイドレイズ', sets: 3 },
+    { name: 'フロントレイズ', sets: 1 }, { name: 'インクラインサイドレイズ', sets: 2 },
+    { name: 'フレンチプレス', sets: 3 }, { name: 'ケーブルフライ', sets: 2 },
+    { name: 'マシントライセプス', sets: 4 },
+  ]},
+  pullB: { label: 'Pull B', type: 'pull', exercises: [
+    { name: 'ワイドチンニング', sets: 3 }, { name: 'スミスベント', sets: 3 },
+    { name: '独立ラットプル', sets: 3 }, { name: 'ロープーリー（ストレート）', sets: 3 },
+    { name: 'マシンロウ（スポーツ）', sets: 3 }, { name: 'シュラッグ', sets: 2 },
+    { name: 'インクラインカール', sets: 3 }, { name: 'マシンカール', sets: 2 },
+    { name: 'ケーブルカール', sets: 2 }, { name: 'ハンマーカール', sets: 2 },
+    { name: 'リストカール＆リバースリストカール', sets: 2 },
+  ]},
+  legB: { label: 'Leg B', type: 'leg', exercises: [
+    { name: 'カーフレイズ', sets: 2 }, { name: 'スクワット', sets: 3 },
+    { name: 'デッドリフト', sets: 3 }, { name: 'ハックスクワット', sets: 4 },
+    { name: 'エクステンション＆シシー', sets: 3 }, { name: 'レッグカール', sets: 3 },
+    { name: 'アブダクション', sets: 3 }, { name: 'ブルガリアン', sets: 2 },
+  ]},
+};
+
+// ── localStorage ──
+function loadMenus() {
+  try {
+    const s = localStorage.getItem(MENU_KEY);
+    if (s) return JSON.parse(s);
+  } catch {}
+  return null;
+}
+
+function saveMenusToStorage(data) {
+  localStorage.setItem(MENU_KEY, JSON.stringify(data));
+}
+
+function initMenus() {
+  if (loadMenus()) return;
+  const data = {};
+  for (const [k, v] of Object.entries(DEFAULT_MENU_DATA)) {
+    data[k] = { ...v, exercises: v.exercises.map(ex => ({ ...ex, id: uid() }) ) };
   }
-  function startTimer(sec) {
-    clearInterval(interval);
-    total = sec; remaining = sec;
-    clock.className = 'clock running';
+  saveMenusToStorage(data);
+}
+
+function getMenus() {
+  return loadMenus() || {};
+}
+
+// ── Service Worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+async function sendSwMessage(data) {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (reg && reg.active) reg.active.postMessage(data);
+  } catch {}
+}
+
+// ── Notification permission ──
+let notifRequested = false;
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (notifRequested || Notification.permission !== 'default') return;
+  notifRequested = true;
+  await Notification.requestPermission();
+}
+
+// ── Timer ──
+let timerInterval = null;
+const clock = document.getElementById('clock');
+const statusEl = document.getElementById('status');
+const secBtns = document.querySelectorAll('.sec-btn');
+const SEC_VALUES = [90, 120, 150, 180];
+
+function fmt(s) {
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+async function startTimer(sec) {
+  await requestNotificationPermission();
+
+  clearInterval(timerInterval);
+  let remaining = sec;
+
+  clock.className = 'clock running';
+  clock.textContent = fmt(remaining);
+  statusEl.textContent = '';
+  secBtns.forEach(b => b.classList.remove('active'));
+  const idx = SEC_VALUES.indexOf(sec);
+  if (idx !== -1) secBtns[idx].classList.add('active');
+
+  sendSwMessage({ type: 'SCHEDULE_NOTIFICATION', finishAt: Date.now() + sec * 1000 });
+
+  timerInterval = setInterval(() => {
+    remaining--;
     clock.textContent = fmt(remaining);
-    status.textContent = '';
-    secBtns.forEach(b => b.classList.remove('active'));
-    secBtns[[90,120,150,180].indexOf(sec)].classList.add('active');
-    interval = setInterval(() => {
-      remaining--;
-      clock.textContent = fmt(remaining);
-      if (remaining <= 10 && remaining > 0) {
-        status.textContent = remaining + ' sec remaining';
-        clock.className = 'clock finished';
-      }
-      if (remaining <= 0) {
-        clearInterval(interval); interval = null;
-        status.textContent = 'Complete! Good work.';
-        secBtns.forEach(b => b.classList.remove('active'));
-      }
-    }, 1000);
+    if (remaining <= 10 && remaining > 0) {
+      statusEl.textContent = remaining + ' sec remaining';
+      clock.className = 'clock finished';
+    }
+    if (remaining <= 0) {
+      clearInterval(timerInterval); timerInterval = null;
+      statusEl.textContent = 'Complete! Good work.';
+      secBtns.forEach(b => b.classList.remove('active'));
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval); timerInterval = null;
+  statusEl.textContent = '';
+  sendSwMessage({ type: 'CANCEL_NOTIFICATION' });
+}
+
+function resetTimer() {
+  clearInterval(timerInterval); timerInterval = null;
+  clock.className = 'clock';
+  clock.textContent = '00:00';
+  statusEl.textContent = '';
+  secBtns.forEach(b => b.classList.remove('active'));
+  sendSwMessage({ type: 'CANCEL_NOTIFICATION' });
+}
+
+// ── Menu render (normal view) ──
+let activeMenu = null;
+
+function renderMenuTabs() {
+  const menus = getMenus();
+  document.getElementById('menuTabs').innerHTML = MENU_ORDER.map(id => {
+    const m = menus[id];
+    return `<button class="menu-tab ${m.type}" data-id="${id}" onclick="showMenu('${id}')">${escHtml(m.label)}</button>`;
+  }).join('');
+}
+
+function renderMenuContents() {
+  const menus = getMenus();
+  document.getElementById('menuContents').innerHTML = MENU_ORDER.map(id => {
+    const m = menus[id];
+    const totalSets = m.exercises.reduce((s, e) => s + e.sets, 0);
+    const items = m.exercises.map((ex, i) => `
+      <div class="menu-item">
+        <span class="item-num">${i + 1}</span>
+        <span class="item-name">${escHtml(ex.name)}</span>
+        <span class="item-sets ${m.type}">${ex.sets} set${ex.sets !== 1 ? 's' : ''}</span>
+      </div>`).join('');
+    return `
+      <div id="menu-${id}" class="menu-content">
+        <div class="menu-header">
+          <div class="menu-title ${m.type}">${escHtml(m.label).toUpperCase()}</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="menu-total">${totalSets} sets</div>
+            <button class="edit-menu-btn" onclick="startEdit('${id}')">✏️ 編集</button>
+          </div>
+        </div>
+        ${items}
+      </div>`;
+  }).join('');
+}
+
+function showMenu(id) {
+  const tabs = document.querySelectorAll('.menu-tab');
+  if (activeMenu === id) {
+    document.getElementById('menu-' + id).classList.remove('visible');
+    tabs.forEach(t => { if (t.dataset.id === id) t.classList.remove('active'); });
+    activeMenu = null;
+    return;
   }
-  function stopTimer() {
-    clearInterval(interval); interval = null;
-    status.textContent = '';
+  MENU_ORDER.forEach(mid => {
+    document.getElementById('menu-' + mid).classList.remove('visible');
+  });
+  tabs.forEach(t => t.classList.remove('active'));
+  document.getElementById('menu-' + id).classList.add('visible');
+  tabs.forEach(t => { if (t.dataset.id === id) t.classList.add('active'); });
+  activeMenu = id;
+}
+
+// ── Edit mode ──
+let editingId = null;
+
+function startEdit(id) {
+  editingId = id;
+  const menu = getMenus()[id];
+
+  document.getElementById('normalView').style.display = 'none';
+  document.getElementById('editView').classList.add('active');
+  document.getElementById('editMenuTitle').value = menu.label;
+  document.getElementById('editError').textContent = '';
+
+  renderEditList(menu.exercises);
+}
+
+function renderEditList(exercises) {
+  const listEl = document.getElementById('editList');
+  listEl.innerHTML = exercises.map(ex => `
+    <div class="edit-item" data-id="${escHtml(ex.id)}">
+      <span class="drag-handle" title="ドラッグして並び替え">☰</span>
+      <input class="edit-name-input" type="text" value="${escHtml(ex.name)}"
+             placeholder="種目名" oninput="onEditInput()">
+      <div class="sets-control">
+        <button class="sets-btn" onclick="adjustSets(this,-1)" type="button">−</button>
+        <input class="sets-input" type="number" value="${ex.sets}" min="1"
+               oninput="clampSets(this);onEditInput()">
+        <button class="sets-btn" onclick="adjustSets(this,1)" type="button">＋</button>
+      </div>
+      <button class="delete-btn" onclick="deleteExercise(this)" type="button" title="削除">🗑</button>
+    </div>`).join('');
+
+  updateEditTotal();
+  initDragDrop(listEl);
+}
+
+function onEditInput() {
+  updateEditTotal();
+}
+
+function updateEditTotal() {
+  const inputs = document.querySelectorAll('#editList .sets-input');
+  const total = [...inputs].reduce((s, el) => s + (parseInt(el.value) || 0), 0);
+  document.getElementById('editTotalSets').textContent = total;
+}
+
+function getEditExercises() {
+  return [...document.querySelectorAll('#editList .edit-item')].map(item => ({
+    id: item.dataset.id,
+    name: item.querySelector('.edit-name-input').value,
+    sets: Math.max(1, parseInt(item.querySelector('.sets-input').value) || 1),
+  }));
+}
+
+function adjustSets(btn, delta) {
+  const input = btn.parentElement.querySelector('.sets-input');
+  input.value = Math.max(1, (parseInt(input.value) || 1) + delta);
+  onEditInput();
+}
+
+function clampSets(input) {
+  const v = parseInt(input.value);
+  if (isNaN(v) || v < 1) input.value = 1;
+}
+
+function addExercise() {
+  const listEl = document.getElementById('editList');
+  const newItem = document.createElement('div');
+  newItem.className = 'edit-item';
+  newItem.dataset.id = uid();
+  newItem.innerHTML = `
+    <span class="drag-handle" title="ドラッグして並び替え">☰</span>
+    <input class="edit-name-input" type="text" value="" placeholder="種目名" oninput="onEditInput()">
+    <div class="sets-control">
+      <button class="sets-btn" onclick="adjustSets(this,-1)" type="button">−</button>
+      <input class="sets-input" type="number" value="3" min="1" oninput="clampSets(this);onEditInput()">
+      <button class="sets-btn" onclick="adjustSets(this,1)" type="button">＋</button>
+    </div>
+    <button class="delete-btn" onclick="deleteExercise(this)" type="button" title="削除">🗑</button>`;
+  listEl.appendChild(newItem);
+  newItem.querySelector('.edit-name-input').focus();
+  onEditInput();
+}
+
+function deleteExercise(btn) {
+  const listEl = document.getElementById('editList');
+  if (listEl.querySelectorAll('.edit-item').length <= 1) {
+    showEditError('種目は1件以上必要です');
+    return;
   }
-  function resetTimer() {
-    clearInterval(interval); interval = null;
-    total = 0; remaining = 0;
-    clock.className = 'clock';
-    clock.textContent = '00:00';
-    status.textContent = '';
-    secBtns.forEach(b => b.classList.remove('active'));
+  btn.closest('.edit-item').remove();
+  onEditInput();
+}
+
+function showEditError(msg) {
+  const el = document.getElementById('editError');
+  el.textContent = msg;
+  setTimeout(() => { if (el.textContent === msg) el.textContent = ''; }, 2500);
+}
+
+function saveMenu() {
+  const title = document.getElementById('editMenuTitle').value.trim();
+  if (!title) { showEditError('メニュー名を入力してください'); return; }
+
+  let hasError = false;
+  document.querySelectorAll('#editList .edit-name-input').forEach(input => {
+    if (!input.value.trim()) { input.classList.add('error'); hasError = true; }
+    else input.classList.remove('error');
+  });
+  if (hasError) { showEditError('種目名を入力してください'); return; }
+
+  const exercises = getEditExercises();
+  if (exercises.length === 0) { showEditError('種目は1件以上必要です'); return; }
+
+  const menus = getMenus();
+  menus[editingId] = {
+    ...menus[editingId],
+    label: title,
+    exercises: exercises.map(ex => ({ ...ex, name: ex.name.trim() })),
+  };
+  saveMenusToStorage(menus);
+
+  const savedId = editingId;
+  closeEdit();
+  renderMenuTabs();
+  renderMenuContents();
+  activeMenu = null;
+  showMenu(savedId);
+}
+
+function cancelEdit() {
+  closeEdit();
+}
+
+function closeEdit() {
+  document.getElementById('normalView').style.display = '';
+  document.getElementById('editView').classList.remove('active');
+  editingId = null;
+}
+
+// ── Drag and Drop (pointer events, touch-compatible) ──
+function initDragDrop(listEl) {
+  let ghost = null;
+  let dragSrc = null;
+  let ghostOffsetX = 0;
+  let ghostOffsetY = 0;
+
+  listEl.addEventListener('pointerdown', onDown);
+
+  function onDown(e) {
+    if (!e.target.closest('.drag-handle')) return;
+    e.preventDefault();
+
+    dragSrc = e.target.closest('.edit-item');
+    if (!dragSrc) return;
+
+    const rect = dragSrc.getBoundingClientRect();
+    ghostOffsetX = e.clientX - rect.left;
+    ghostOffsetY = e.clientY - rect.top;
+
+    ghost = dragSrc.cloneNode(true);
+    ghost.className = 'edit-item drag-ghost';
+    ghost.style.cssText = `
+      position:fixed; width:${rect.width}px;
+      left:${rect.left}px; top:${rect.top}px;
+      pointer-events:none; z-index:9999;`;
+    document.body.appendChild(ghost);
+
+    dragSrc.classList.add('is-dragging');
+    listEl.setPointerCapture(e.pointerId);
   }
 
-  // ── メニュー ──
-  const menuIds = ['pushA','pullA','legA','pushB','pullB','legB'];
-  const tabs = document.querySelectorAll('.menu-tab');
-  let activeMenu = null;
-  function showMenu(id) {
-    if (activeMenu === id) {
-      document.getElementById(id).classList.remove('visible');
-      tabs[menuIds.indexOf(id)].classList.remove('active');
-      activeMenu = null;
-      return;
+  listEl.addEventListener('pointermove', onMove);
+
+  function onMove(e) {
+    if (!dragSrc) return;
+    e.preventDefault();
+
+    ghost.style.left = (e.clientX - ghostOffsetX) + 'px';
+    ghost.style.top  = (e.clientY - ghostOffsetY) + 'px';
+
+    const others = [...listEl.querySelectorAll('.edit-item:not(.is-dragging)')];
+    let placed = false;
+    for (const item of others) {
+      const r = item.getBoundingClientRect();
+      if (e.clientY < r.top + r.height / 2) {
+        listEl.insertBefore(dragSrc, item);
+        placed = true;
+        break;
+      }
     }
-    menuIds.forEach((m, i) => {
-      document.getElementById(m).classList.remove('visible');
-      tabs[i].classList.remove('active');
-    });
-    document.getElementById(id).classList.add('visible');
-    tabs[menuIds.indexOf(id)].classList.add('active');
-    activeMenu = id;
+    if (!placed && others.length > 0) listEl.appendChild(dragSrc);
   }
+
+  function endDrag() {
+    if (!dragSrc) return;
+    ghost.remove(); ghost = null;
+    dragSrc.classList.remove('is-dragging');
+    dragSrc = null;
+    onEditInput();
+  }
+
+  listEl.addEventListener('pointerup', endDrag);
+  listEl.addEventListener('pointercancel', endDrag);
+}
+
+// ── Init ──
+initMenus();
+renderMenuTabs();
+renderMenuContents();
 </script>
 </body>
 </html>
